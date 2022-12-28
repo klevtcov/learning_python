@@ -1,0 +1,121 @@
+md store-server # созаём папку
+cd .\store-server\ # переходим в неё
+python -m venv venv # устанавливаем виртуальное окружение
+.\venv\Scripts\activate # активируем виртуальное окружение
+pip install Django==3.2.16 # LTS версия
+python.exe -m pip install --upgrade pip # обновить pip
+django-admin startproject store # инициализируем проект
+python manage.py runserver # запуск сервера
+ctrl-c # остановить сервер
+
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py startapp APP_NAME # добавление новых приложений
+admin.py # настройки админки
+apps.py # модуль настроек приложения
+mysite/settings.py INSTALLED_APPS # регистрируем приложение
+
+настройки миграций:
+python manage.py makemigrations - создаем и обновляем миграции
+python manage.py sqlmigrate news 0001 - посмотреть, какая таблица будет создана
+python manage.py migrate - применение всех миграций
+если есть ошибка в данных и миграция не осуществляется, можно удалить сам файл миграции и исправить ошибку в коде
+
+store\python manage.py startapp products
+store\settings.py INSTALLED_APPS # регистрируем приложение
+
+{{ переменные }} - можно передавать значения
+{% теги %} - можно задавать логику {% if ... %} {% endif %}
+
+настройка статики для проекта
+{% load static %} - подгружаем статику в шаблон (index.html)
+исправить ссылки на статику. теперь, как бы у нас не называлось хранилище, нам достаточно 
+поменять путь до него в настройках и данные везде подтянутся правильно
+<link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+динамические urls
+{% url 'products' %} - название прописывается в файле urls.py name=
+
+DRY - Dont Repeat Yourself. принцип программирования
+наследование  шаблонов
+{% extends 'products/base.html' %} - от базового шаблона
+{% block content %} {% endblock %} - в базовом шаблоне
+{% block content %} .... {% endblock %} - на странице
+
+ORM django - object-relational Mapping
+models.py - настраиваем модель данных (создаём таблицы) 
+
+Сделать миграции
+makemigrations - создание новых миграций
+migrate - применение миграций
+
+python manage.py makemigrations
+python manage.py migrate
+
+работа с моделями через консоль
+python manage.py shell
+
+pip install django-extensions
+python -m pip install ipython
+
+идем в settings.py ->  INSTALLED_APPS и добавляем приложение django_extensions
+запускаем через ./manage.py shell_plus
+
+django-extensions - автоматически импортирует нужные нам модели и классы(например, ProductCategory, Product и другие, о которых узнаете позже)
+ipyhton - для удобства использования терминала, дает возможность вводить команды clear, cd, pwd не открывая новый терминал
+
+Ручное создание записи, через консоль
+>>> from products.models import ProductCategory  
+>>> category = ProductCategory(name='Одежда', description='описание для одежды')
+>>> category.save()
+
+переопределяем метод __str__ для класса ProductCategory, чтоб выводить в консоль данные об экземпляре класса
+def __str__(self):
+    return self.name
+
+перезапускаем консоль
+>>> from products.models import ProductCategory
+>>> category = ProductCategory.objects.get(id=1)  
+>>> category
+<ProductCategory: Одежда>
+
+>>> ProductCategory.objects.create(name='Обувь')
+<ProductCategory: Обувь>
+
+>>> ProductCategory.objects.all()  
+<QuerySet [<ProductCategory: Одежда>, <ProductCategory: Обувь>]>
+
+>>> ProductCategory.objects.filter(description=None)
+<QuerySet [<ProductCategory: Обувь>]>
+
+Работа с данными через админ-панель
+python manage.py createsuperuser
+admin.py -> регистрируем модель
+from products.models import ProductCategory, Product
+admin.site.register(Product)
+admin.site.register(ProductCategory)
+
+настройка медиа-файлов
+создаём папку media в корне проекта
+settings.py ->
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+urls.py -> подтягиваем отображение картинок локально, только если дебаг включен
+from django.conf.urls.static import static
+from django.conf import settings
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+в шаблоне: {{ product.image.url }}
+
+Fixtures
+Отображение данных в виде определенного представления, как вариант - json
+python -Xutf8 manage.py dumpdata products.ProductCategory > categories.json
+python -Xutf8 manage.py dumpdata products.ProductCategory > goods.json
+создаётся бекап базы в выбранном виде
+создаём папку products/fixtures 
+можно загрузить из бекапа ->
+python manage.py loaddata products/fixtures/categories.json
+
+
+

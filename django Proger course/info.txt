@@ -1,0 +1,549 @@
+для установки виртуального окружения - python -m venv venv
+для запуска - .\venv\Scripts\activate
+для выхода - deactivate
+
+
+создание нового проекта django-admin startproject mysite
+переход в проект-  cd mysite
+запуск сервера - python manage.py runserver
+остановка сервера - ctrl-c
+
+добавление новых приложений
+python manage.py startapp news
+
+admin.py - настройки админки
+apps.py - модуль настроек приложения
+
+
+регистрируем приложение в mysite/settings.py INSTALLED_APPS
+
+MVC (MTV) Model Views (Template) Controller (View)
+Model - отвечает за работу с данными - хранение, получение
+View - отображение данных, шаблон, страница
+Controller - принимает запросы, обрабатывает и выдаёт нужный вид
+
+views, контроллеры
+можно писать функции или классы
+
+настройки миграций:
+python manage.py makemigrations - создаем и обновляем миграции
+python manage.py sqlmigrate news 0001 - посмотреть, какая таблица будет создана
+python manage.py migrate - применение всех миграций
+если есть ошибка в данных и миграция не осуществляется, можно удалить сам файл миграции и исправить ошибку в коде
+
+
+
+ ORM – это акроним от Object Relational Mapping (Объектно-реляционное отображение)
+ Объектно-реляционное отображение — это технология программирования, которая связывает базы данных с 
+ концепциями объектно-ориентированных языков программирования, создавая «виртуальную объектную базу данных».
+ Существуют как проприетарные, так и свободные реализации этой технологии.
+
+python manage.py shell - консоль джанго
+from news.models import News 
+News(title='Новость 1', content = 'Контент новости 1')
+news1 = _
+news1.title
+news1.save()
+news1.id
+from django.db import connection
+connection.queries
+news1.pk - id, primary key
+news2 = News(title='Новость 2', content = 'Контент новости 2')
+news2.save()
+news3 = News()
+news3.title = 'Новость 3'
+news3.content = 'Контенст новости 3'
+news3.save()
+
+exit()
+
+news4 = News.objects.create(title='News 4', content='Content of news 4')
+сохраняется автоматически
+
+News.objects.all() возвращает все записи
+news = _ присваевает переменной значение предыдущего вычисления
+
+News.objects.filter(title='News 5') - аналогично запросу sql WHERE
+
+News.objects.get(pk=5) # pk - primary key, id
+News.objects.get(title='News 5') - будет ошибка, метод гет может вернуть не более одного объекта
+
+News.objects.get(pk=4) запрашиваем новость с ид 4
+news4 = _ сохраняем результат в переменную
+news4.title = 'Новостя 4' меняем название новости
+news4.save()
+
+news6 = News.objects.get(pk=6)
+news6.delete()
+(1, {'news.News': 1}) - удалена одна запись
+
+News.objects.order_by('title') - аналогично ORDER BY, позволяет отсортировать по определённому полю
+News.objects.order_by('-title') в обратном порядке
+
+News.objects.exclude(title='Новостя 4') - все, за исключением
+
+# Шаблоны
+
+from django.shortcuts import render - импорт рендера для работы с шаблонами
+
+Админка
+
+python manage.py createsuperuser - создание суперюзера для входа в админку
+mysite/news/admin.py - регистрация приложения в админке
+mysite/news/models.py - настройка отображения модели  в админке
+mysite/news/apps.py - настройки имениприложения в админке
+mysite/news/admin.py - настраиваем отображение полей в админке внутри приложения
+mysite/news/models.py - настройка отображения имени полей
+
+После большого изменения в моделях необходимо создать миграцию данных
+python manage.py makemigrations
+python manage.py migrate
+
+Сбор статики со всех вложенных проектов в одно место
+в сеттингс прописываем
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_FILES_DIRS = [
+    os.path.join(BASE_DIR, 'mysite/static'),
+
+python manage.py collectstatic - запускаем сбор статики
+
+добавление форм:
+прописываем маршрут
+создаем метод в файле views
+подключаем шаблон
+создаем файл форму внутри нашего приложения
+форма не связанная с моделью - писадли класс описывая форму, по сути дублируя поля модели
+
+кастомные валидаторы
+работают после стандартнорй валидации т.к. работают с полями из form.cleaned_data
+пишется метод внутри класса с формой
+
+Контроллеры класса
+cbw - class base views
+добавим класс, который заменит функции индекс, категории и формы
+
+
+подключение внешних бд, mySql
+pip install mysqlclient
+settings - DATABASES
+
+ORM модель
+ORM (Object-Relational Mapping, рус. объектно-реляционное отображение) — это технология программирования, 
+которая связывает базы данных с концепциями объектно-ориентированных языков программирования, создавая 
+«виртуальную объектную базу данных».
+
+python manage.py shell
+from news.models import News, Category
+News.objects.all()
+News.objects.order_by('pk')
+News.objects.order_by('-pk') - обратный порядок
+News.objects.all().reverse() - обратный порядок
+News.objects.get(pk=4) - получить 1 элемент
+News.objects.get(title='News 5')
+get ожидает получить только 1 запись, поэтому чаще используется для поиска по уникальному идентификатору
+
+news5 = News.objects.get(title='News 5')
+news5.is_published - True
+news5.category - <Category: Наука>
+news5.category.pk - 4
+news5.category.title - 'Наука'
+Category первичная модель, т.к. News ссылается на неё
+cat4 = Category.objects.get(pk=4)
+cat4.title - 'Наука'
+Обратная связь: 
+<имя_связанной_модели>_set
+cat4.news_set.all() - <QuerySet [<News: Новость со связанной формой>, <News: Новость из формы2>, <News: News 5>]>
+news = _ - сохраняет в переменную результат предыдущей команды
+news - <QuerySet [<News: Новость со связанной формой>, <News: Новость из формы2>, <News: News 5>]>
+for item in news:
+    print(item.title, item.is_published)
+Новость со связанной формой True
+Новость из формы2 True
+News 5 True
+добавим в модель get_news
+category = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория', related_name='get_news')
+после внесения изменений в модель надо перезапустить шелл и заного загрузить модель
+exit 
+python manage.py shell
+from news.models import News, Category
+cat4 = Category.objects.get(pk=4)
+news = cat4.news_set.all() - ошибка, AttributeError: 'Category' object has no attribute 'news_set', т.к. мы переназвали атрибут по умолчанию
+news = cat4.get_news.all() - <QuerySet [<News: Новость со связанной формой>, <News: Новость из формы2>, <News: News 5>]>
+фильтры (field lookups)
+<имя_поля>__<фильтр>
+gt - Greater than >
+sql - select ... where pk > 12
+News.objects.filter(pk__gt=12) - <QuerySet [<News: Новоновость>, <News: Новость с сайта>, <News: Новость из формы>, <News: Новость без категории>, <News: Новость со связанной формой>]>
+gte - Greater or equal than, >=
+contains - содержит, регистрозависимый. НО, sqlite не поддерживает регистрозависимого поиска для латиницы, но остальные символы ищет дословно. т.е. для кириллицы будет сопоставление побуквенное, с учетом регистра
+sql - LIKE 
+icontains - регистронезависимый поиск, но для sqlite, для кириллицы, будет регистрозависимым
+News.objects.filter(title__contains='new') - <QuerySet [<News: News 5>]>
+News.objects.filter(title__contains='форм') - <QuerySet [<News: Новость из формы>, <News: Новость со связанной формой>, <News: Новость формы 4>, <News: Новость из формы 3>, <News: Новость из формы2>, <News: Новость из формы>, <News: Новость из формы>]>
+in - поиск среди значений
+sql - WHERE id IN ('a', 'b', 'c')
+News.objects.filter(pk__in=[9,10,11]) - <QuerySet [<News: Новость из формы 3>, <News: Новость из формы2>, <News: Новость из формы>]> 
+News.objects.filter(pk__in=[9,10,11], title__contains='формы2') - <QuerySet [<News: Новость из формы2>]>
+
+News.objects.first() - <News: Новоновость> - используется сортировка из модели, у нас по дате обратная. но можно задать явную сортировку:
+News.objects.order_by('pk').first() -  <News: Новость 1>
+
+cat1 = Category.objects.get(pk=1) -  <Category: Культура>
+news = cat1.news_set.all() - <QuerySet [<News: Новоновость>, <News: Новость из формы>, <News: Новость из админки>, <News: Новость 2>, <News: Новость 1>]>
+news = cat1.news_set.filter(pk__gt=1) - <QuerySet [<News: Новоновость>, <News: Новость из формы>, <News: Новость из админки>, <News: Новость 2>]>
+news = cat1.news_set.filter(pk__gt=1).first() - <News: Новоновость>
+news = cat1.news_set.filter(pk__gt=1).last() - <News: Новость 2>
+
+News.objects.earliest('updated_at') - <News: Новость 1> Выборка по полю с форматом даты
+News.objects.latest('updated_at') -  <News: Новоновость>
+
+cats = Category.objects.filter(pk__in=[1,3]) - <QuerySet [<Category: Культура>, <Category: Политика>]>
+News.objects.filter(category__in=cats) -  <QuerySet [<News: Новоновость>, <News: Новость с сайта>, <News: Новость из формы>, <News: Новость без категории>, <News: Новость формы 4>, <News: Новость из формы>, <News: Новость из формы>, <News: Новость из админки>, <News: Новостя 4>, <News: Новость 2>, <News: Новость 1>]>
+
+добавляем новую категорию в базу, Тест
+cat1 = Category.objects.get(pk=1) - <Category: Культура>
+cat5 = Category.objects.get(pk=5) - <Category: Тест>
+cat1.news_set.exists() - True
+cat5.news_set.exists() - False - записей в этой категории настроек
+cat1.news_set.count() - 5
+cat5.news_set.count() - 0
+News.objects.count() - 16
+
+news = News.objects.get(pk=5) - <News: News 5>
+news.get_previous_by_created_at() -  <News: Новостя 4>
+news.get_next_by_created_at() -  <News: Новость из админки>
+news.get_next_by_created_at(pk__gt=10) - <News: Новость из формы 3>
+news.get_next_by_created_at(pk__gt=10, title__contains=4) - <News: Новость формы 4>
+
+Получение данных из вторичной модели по полю первичной:
+<имя поля внешнего ключа>__<имя поля первичной модели>
+News.objects.filter(category__title='Спорт') - <QuerySet [<News: Новость из формы 3>, <News: Новость 3>]>
+Category.objects.filter(news__title__contains='формы') - <QuerySet [<Category: Культура>, <Category: Наука>, <Category: Политика>, <Category: Политика>, <Category: Политика>, <Category: Спорт>]>
+Category.objects.filter(news__title__contains='формы').distinct() - <QuerySet [<Category: Культура>, <Category: Наука>, <Category: Политика>, <Category: Спорт>]> Уникальные
+Category.objects.filter(news__title__contains='формы').count() - 6
+
+логические ИЛИ, не
+импортируем класс Q
+from django.db.models import Q
+| - или
+& - и
+~ - не
+News.objects.filter(pk__in=[5,6], title__contains=2) - <QuerySet []>
+News.objects.filter(Q(pk__in=[5,6]) | Q(title__contains=2)) - <QuerySet [<News: Новость из формы2>, <News: News 5>, <News: Новость 2>]>
+News.objects.filter(Q(pk__in=[5,6]) | Q(title__contains=2) & ~ Q(pk__gt=4)) - <QuerySet [<News: News 5>, <News: Новость 2>]>
+
+срезы
+News.objects.all()[:3] - <QuerySet [<News: Новоновость>, <News: Новость с сайта>, <News: Новость из формы>]>
+News.objects.all()[10:] - <QuerySet [<News: Новость из админки>, <News: News 5>, <News: Новостя 4>, <News: Новость 3>, <News: Новость 2>, <News: Новость 1>]>
+News.objects.all()[3:5] - <QuerySet [<News: Новость без категории>, <News: Новость со связанной формой>]>
+
+Агрегатные функции aggregate
+Добавляем еще одно поле в модели
+views = models.IntegerField(default=0)
+применяем миграции после изменения в модели
+python manage.py makemigrations
+python manage.py migrate
+
+from django.db.models import *
+(можно отдельно иимпортировать нужные функции - Max, Min, Avg и тд)
+News.objects.aggregate(Min('views'),Max('views')) - {'views__min': 0, 'views__max': 210}
+News.objects.aggregate(min_views=Min('views'),max_views=Max('views')) - {'min_views': 0, 'max_views': 210} Можно присваивать имена
+News.objects.aggregate(diff=Min('views') - Max('views')) -  {'diff': -210} вычисления
+News.objects.aggregate(Sum('views')) - {'views__sum': 1151}
+News.objects.aggregate(Avg('views')) - {'views__avg': 71.9375}
+
+cats = Category.objects.annotate(Count('news')) - <QuerySet [<Category: Культура>, <Category: Спорт>, <Category: Политика>, <Category: Наука>, <Category: Тест>]>
+for item in cats:
+    print(item.title, item.news__count)
+Культура 5 / Спорт 2 / Политика 6 / Наука 3 / Тест 0
+cats = Category.objects.annotate(cnt=Count('news')) 
+for item in cats:
+    print(item.title, item.cnt)
+
+cats = Category.objects.annotate(max_views=Max('news__views'))
+for item in cats:
+    print(item.title, item.max_views)
+Культура 210 / Спорт 127 / Политика 87 / Наука 127 / Тест None
+
+cats = Category.objects.annotate(sum_views=Sum('news__views'))
+for item in cats:
+    print(item.title, item.sum_views)
+Культура 408 / Спорт 164 / Политика 265 / Наука 314 / Тест None
+
+cats = Category.objects.annotate(cnt=Count('news')).filter(cnt__gt=0)
+for item in cats:
+    print(item.title, item.cnt)
+Культура 5 / Спорт 2 / Политика 6 / Наука 3 - без Теста
+
+
+Убрать из выдачи категории без записей
+templatetags/news_tags.py
+categories = Category.objects.annotate(cnt=Count('news')).filter(cnt__gt=0)
+и добавляем в шаблон {{ item.cnt }}
+
+News.objects.aggregate(Count('views')) - {'views__count': 16}
+News.objects.aggregate(Count('views', distinct=True)) - {'views__count': 14} Только уникальные значения
+
+Можно получать не все поля модели, а только выбранные
+news1 = News.objects.values('title','views').get(pk=1) - {'title': 'Новость 1', 'views': 45}
+
+импортируем метод дл связей
+from django.db import connection - отображает текущие связи
+connection.queries
+from django.db import reset_queries - очищает все связи
+reset_queries()
+
+news = News.objects.values('title','views','category__title')
+or item in news:
+    print(item['title'], item['category__title'])
+Новоновость Культура / Новость с сайта Политика / Новость из формы Культура / и т.д.
+
+connection.queries - [{'sql': 'SELECT "news_news"."title", "news_news"."views", "news_category"."title" FROM "news_news" INNER JOIN "news_category" ON ("news_news"."category_id" = "news_category"."id") ORDER BY "news_news"."created_at" DESC',
+  'time': '0.000'}]
+
+
+класс F - метод для сравнения разных полей (q сравниваем с константами)
+from django.db.models import F
+news = News.objects.get(pk=1)
+news.views = F('views') + 1
+news.save()
+
+news = News.objects.filter(content__icontains=F('title')) - <QuerySet [<News: News 5>]>
+
+Вычисления, производимые базой данных
+from django.db.models.functions import Length
+news = News.objects.annotate(length=Length('title')).all()
+for item in news:
+   print(item.title, item.length)
+Новоновость 11 / Новость с сайта 15 / Новость из формы 16 / Новость без категории 21 / Новость со связанной формой 27 / и т.д.
+
+RAW sql - запросы за чистом sql (raw - сырой, необработанный)
+news = News.objects.raw("SELECT * FROM news_news") - <RawQuerySet: SELECT * FROM news_news>
+for item in news:
+   print(item.title, item.pk, item.is_published)
+Новость 1 1 True / Новость 2 2 True / Новость из админки 7 True / и т.д.
+
+news = News.objects.raw("SELECT title  FROM news_news") - запрос должен соделжать первичный ключ, id
+FieldDoesNotExist: Raw query must include the primary key - ошибка
+
+Отложенная загрузка данных
+news = News.objects.raw("SELECT id, title  FROM news_news")
+for item in news:
+   print(item.title, item.is_published) - будет выполнено, но это создаст дополнительный sql запрос в базу за данными из поля is_published. двойная нагрузка на базу
+
+Запросы с параметрами
+news = News.objects.raw("SELECT * FROM news_news WHERE title = 'News 5'") - <RawQuerySet: SELECT * FROM news_news WHERE title = 'News 5'>
+for item in news:
+    print(item.title) - News 5
+
+news = News.objects.raw("SELECT * FROM news_news WHERE title = %s, ['News 5']") - передаем значение параметром, защита от sql-инъекций
+
+
+Django Debug Toolbar и оптимизация запросов
+pip install django-debug-toolbar
+https://django-debug-toolbar.readthedocs.io/en/latest/installation.html - документация
+добавить тулбар в сеттингс и далее по документации
+
+оптимизация
+Каждое название категории в шапке новости загружается отдельным запросом, т.к. ленивая загрузка данных не предзагружает их,
+а делает запрос только в момент формирования новости, когда мы её выводим через цикл for
+Можно прямо указать джанго, что данные надо загрузить для всех строк. в настройках модели:
+views.py class HomeNews(ListView):
+def get_queryset(self):
+    return News.objects.filter(is_published=True).select_related('category')
+select_related('category') - предзагружает указанные данные
+
+В разделое категории - 10 sql запросов
+class NewsByCategory(ListView)
+def get_queryset(self):
+    return News.objects.filter(category_id = self.kwargs['category_id'], is_published=True).select_related('category')
+
+
+Кастомизация админки
+Через дебаг тулз смотрим шаблоны, которые участвуют в формировании страницы
+C:\\code\\learning\\python\\django Proger course\\venv\\lib\\site-packages\\django\\contrib\\admin\\templates\\admin\\base_html.html
+C:\code\learning\python\django Proger course\mysite\templates - создаём папку admin и кладём шаблон туда
+в шаблоне base.html берём блок {% block extrastyle %}{% endblock %} добавляем его в шаблон base_html
+mysite/static/css создаём admin.css
+добавляем тег в base.html {% load static %}
+добавляем в блок extrastyle - <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+https://materializecss.com/color.html - подборка цветов матириал дизайна
+
+Переопредилить title и прочие атрибуты можно в файле C:\code\learning\python\django Proger course\mysite\news\admin.py
+admin.site.site_title = 'Управление новостями'
+
+вывод картинок новосте в админке.
+в админ admin.py выводим поле: 
+from django.utils.safestring import mark_safe
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'category', 'created_at', 'updated_at', 'is_published', 'get_photo')
+
+    def get_photo(self, obj):
+        if obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" width="75px">')
+        else:
+            return '–'
+
+    get_photo.short_description = 'Миниатюра' - обращаемся к методу short_description для изменения названия колонки
+
+Вывод картинки внутри страницы с новостью
+class NewsAdmin(admin.ModelAdmin):
+    fields = ('title', 'category', 'content', 'photo', 'get_photo', 'is_published', 'views', 'created_at', 'updated_at', )
+ошибка, т.к. поле created_at, updated_at создается автоматически и не может быть изменено, поэтому не отображается в формах
+    readonly_fields = ('get_photo', 'views', 'created_at', 'updated_at') - добавляем указание на нередактируемые поля
+
+save_on_top = True - добавляет панель сохранения на верх страницы
+
+
+Миксины (примеси) - возможность наследовать одним классом другой
+создаём файл utils.py
+импортируем его во вью
+from .utils import MyMixin
+добавляем в наследования
+    mixin_prop = 'hello world'
+обращаемся к методу
+    context['mixin_prop'] = self.get_prop()
+    context['title'] = self.get_upper('Главная страница')
+
+    def get_upper(self, s):
+        if isinstance(s, str):
+            return s.upper()
+        else:
+            return s.title.upper()
+
+context['title'] = self.get_upper(Category.objects.get(pk=self.kwargs['category_id']))
+
+проверка авторизации пользователя
+templates/inc/_nav
+во вьюхе:
+from django.contrib.auth.mixins import LoginRequiredMixin
+class CreateNews(LoginRequiredMixin, CreateView):
+    login_url = '/admin/'
+
+Пагинация (разбивка на страницы)
+pagination
+from django.core.paginator import Paginator
+в классе ListView уже наследован клас сpaginator
+paginate_by = 2
+пишем функцию тест во вьюхе
+def test(request):
+прописываем в шаблонах обращение к {% for p in page_obj.paginator.page_range %}
+{% for name in page_obj.object_list %}
+
+работа с пагинацией через классы
+добавляем внутри класса class HomeNews(MyMixin, ListView): параметр
+paginate_by = 2
+
+
+Регистрация пользователей
+Встроенная модель User
+<a href="{% url register %}">Register</a> | <a href="{% url login %}">Login</a> - добавляем в шаблон
+во вью добавляем 
+def register(request):
+    return (request, 'news/register.html')
+def login(request):
+    return (request, 'news/login.html')
+прописываем в маршрутах urls.py
+    path('register/', register, name='register'),
+    path('login/', login, name='login'),
+
+создаём шаблоны в темплейтах
+импортируем во вью from django.contrib.auth.forms import UserCreationForm
+https://docs.djangoproject.com/en/4.1/topics/auth/default/#django.contrib.auth.forms.UserCreationForm
+дополняем функцию register валидацией и сохранением формы
+добавляем форму в шаблон
+Добавим всплывающее сообщение о регистрации
+во вью from django.contrib import messages
+
+добавляем класс в формы
+UserRegisterForm
+определяем поля 
+импортируем его во вью, меняем в методе наследование с UserCreationForm на UserRegisterForm
+
+аутентификация (есть ли такой пользоватедь), авторизация (авторизация его на сайте)
+импортируем в формы AuthenticationForm
+создаём форму, наследуем -  class UserLoginForm(AuthenticationForm)
+во вью from django.contrib.auth import authenticate, login
+прописываем метод
+def user_login(request)
+добавляем кнопку разлогина, в шаблоне нав
+пишем путь логаута
+
+отправление данных ан почту
+https://django.fun/docs/django/ru/4.0/topics/email/
+umn84NxT2jR6XNqQxNxD
+идём в сеттингс, прописываем настройки
+создаём форму
+испортируем во вьюху from django.core.mail import send_mail
+перепишем метод тест во вьюхе
+
+
+визуальный редактор CKEditor
+pip install django-ckeditor
+https://pypi.org/project/django-ckeditor/
+далее по инструкции прописываем в приложении
+python.exe .\manage.py collectstatic
+CKEDITOR_UPLOAD_PATH = "uploads/"
+path('ckeditor/', include('ckeditor_uploader.urls')),
+admin.py
+class NewsAdminForm(forms.ModelForm)
+class NewsAdmin(admin.ModelAdmin):
+    form = NewsAdminForm
+
+
+Добавляем капчу
+pip install django-simple-captcha
+меняем адрес тест на contact, добавляем в нав
+https://django-simple-captcha.readthedocs.io/en/latest/usage.html#installation
+
+
+кеширование
+https://django.fun/docs/django/ru/4.0/topics/cache/
+прописываем настройки кеширования
+
+
+
+
+вторая часть курса
+https://www.youtube.com/watch?v=YE2PxEp_BqM&list=PLmC7X4gkQWCeYJeFQID3m1f5I6SZgH9Vv
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

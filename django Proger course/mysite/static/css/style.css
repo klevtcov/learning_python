@@ -1,0 +1,16 @@
+body {
+    background-color: #fff;
+}
+
+.media-body {
+    float: right ; /* Обтекание по правому краю */
+    background: #fefefe; /* Цвет фона */
+    border: 1px solid black; /* Параметры рамки */
+    padding: 10px; /* Поля вокруг текста */
+    margin-right: 5px; /* Отступ справа */
+    width: 65%; /* Ширина блока */
+}
+
+.errorlist {
+    color: red;
+}
