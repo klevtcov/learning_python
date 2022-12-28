@@ -118,4 +118,24 @@ python -Xutf8 manage.py dumpdata products.ProductCategory > goods.json
 python manage.py loaddata products/fixtures/categories.json
 
 
+Пространство имён в диспетчере url
+store/urls.py - >
+from django.urls import path, include - добавили инклуд
+from products.views import index, /products/ - удалили импорт продуктов
+path('products/', include('products.urls', namespace='products')),
+
+products/urls.py ->
+from django.urls import path
+from products.views import products
+app_name = 'products'
+    path('', products, name='index'),
+
+в шаблонах ->
+{% url 'products' %} -> {% url 'products:index' %}
+
+
+Авторизация/регистрация
+
+
+
 
