@@ -135,7 +135,38 @@ app_name = 'products'
 
 
 Авторизация/регистрация
+python manage.py startapp users
+регистрируем в settings.py INSTALLED_APPS
+
+users/models.py
+from django.contrib.auth.models import AbstractUser
+class User(AbstractUser):
+    image = models.ImageField(upload_to='users_images', null=True, blank=True)
+
+settings.py -> AUTH_USER_MODEL = 'users.User'
+
+перезаписать бд - удалить, сделать миграции, накатить данные из бекапа
+
+python manage.py makemigrations
+python manage.py migrate
+
+регистрируем модель в админке
+admin.py -> 
+from users.models import User
+admin.site.register(User)
 
 
+создаём шаблоны в папке users, регистрируем во вьюхе
+прописываем урлы
+store/urls.py ->      path('users/', include('users.urls', namespace='users')),
+users/urls.py ->
+from django.urls import path
+from users.views import login, registration
+app_name = 'users'
+urlpatterns = [
+    path('login/', login, name='login'),
+    path('registration/', registration, name='registration'),
+
+прописываем урлы в шаблонах
 
 
