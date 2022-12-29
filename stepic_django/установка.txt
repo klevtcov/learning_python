@@ -201,4 +201,19 @@ urls.py -> прописываем адреса
 создаём класс в формах-Ю import UserChangeForm, прописываем поля
 views.py -> import UserProfileForm, прописываем логику
 в шаблоне прописываем экшн для формы и поля
+во вьюхе прописываем даннвые пользователя из реквеста, для отображения в полях
+для загрузки картинок <form action="{% url 'users:profile' %}" method="POST" enctype="multipart/form-data">
+и во вьюхе передать файл form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
 
+вывод ошибок
+в шаблоне  {{ form.non_field_errors }}   
+прописываем в settings.py русский язык, для локализации текста ошибок
+
+вывод сообщения после регистрации
+во вьюхе - 
+from django.contrib import auth, messages
+messages.success(request, 'Поздравляем! Вы успешно зарегистрировались!')
+и в шаблоне {% if messages or form.non_field_errors %} и т.д.
+
+логауты
+во вьюхе создаём методпрописываем в urls.py и в шаблонах
