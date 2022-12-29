@@ -174,5 +174,24 @@ urlpatterns = [
 users/forms.py -> создаём класс на основе существующего в библиотеке
 users/views.py -> прописываем логику def login(request): ...
 
+добавляем в формы стили через атрибуты
+username = forms.CharField(widget=forms.TextInput(attrs={
+    'class': 'form-control py-4', 
+    'placeholder': 'Введите имя пользователя'
+}))
+прописываем инпуты в шаблонах ->
+<div class="form-group">
+    <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя пользователя</label>
+    {{ form.username }}
+</div>
+
+регистрация пользователя в базе
+users/forms.py -> import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+class UserRegistrationForm(UserCreationForm):
+users/views.py -> from users.forms import UserLoginForm, UserRegistrationForm
+прописать поля в шаблоне
+прописать логику во вьюхе
+
 
 
