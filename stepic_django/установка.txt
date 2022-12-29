@@ -193,5 +193,12 @@ users/views.py -> from users.forms import UserLoginForm, UserRegistrationForm
 прописать поля в шаблоне
 прописать логику во вьюхе
 
-
+личный кабинет
+делаем шаблон users/templates/profile.html
+прописываем логику во вьюхе
+urls.py -> прописываем адреса
+прописываем адреса в шаблонах
+создаём класс в формах-Ю import UserChangeForm, прописываем поля
+views.py -> import UserProfileForm, прописываем логику
+в шаблоне прописываем экшн для формы и поля
 
