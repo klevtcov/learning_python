@@ -248,6 +248,35 @@ from products.models import ProductCategory, Product, Basket
 from users.models import User
 def basket_add(request, product_id):
 в products/urls.py -  from products.views import products, basket_add
+прописываем пути для корзины
+в шаблоне прописываем действие на кнопку 
+
+подсчет стоимости товаров в корзине
+добавляем в моделле метод пожсчёта суммы def sum(self):
+прописываем в шаблоне, добавляеи логику в контроллере (не самый лучший вариант):
+total_sum = sum(basket.sum() for basket in baskets)
+total_quantity = sum(basket.quantity for basket in baskets)
+и передаём в контексте
+Другой вариант - расширяем класс model.QuerySet своими методами
+class BasketQuerySet(models.QuerySet):
+    def total_sum(self):
+        return sum(basket.sum() for basket in self)
+и в классе корзины задаём     objects = BasketQuerySet.as_manager()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
