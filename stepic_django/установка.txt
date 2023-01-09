@@ -274,7 +274,57 @@ LOGIN_URL = '/users/login/'
 и добавим аналогичную проверку пользователю на вход в профайл
 
 
+включение фильтров по категориям
+во вьюхе def products(request, category_id):
+прописываем логику отображения, в урлах прописываем адреса с названиями категорий
+path('category/<int:category_id/>', products, name='category'),
+и прописываем  в шаблоне урлы
 
+пагинация - постраничный вывод
+во вьюхе from django.core.paginator import Paginator
+дописываем логику в методе products
+прописываем урлы
+правим шаблоны
+
+Интересная задача! Попробовала решить следующим образом:
+1. в контроллере products добавила в контектст переменную с текущей выбранной категорией
+context = {
+        'title': 'Store - Каталог',
+        'categories': ProductCategory.objects.all(),
+        'products': products_paginator,
+        'selected_cat': category_id,
+        }
+помимо этого по дефолту category_id изменила с None на 0 (чтобы тип был integer)
+
+2. в urls.py добавила новый формат ссылки, который учтёт и категорию, и страницу вместо наших 3х разных ссылок на один и тот же контроллер products
+urlpatterns = [
+    path('baskets/add/<int:product_id>/', basket_add, name='basket_add'),
+    path('baskets/remove/<int:basket_id>/', basket_remove, name='basket_remove'),
+    path('cat/<int:category_id>/page/<int:page_num>/', products, name='catinator')
+    ]
+
+3. в темплейте products.html при листании страниц добавила условие для формирования ссылки:
+{% for page in products.paginator.page_range  %}
+    <li class="page-item">
+        <a class="page-link" href="{% url 'products:catinator' category_id=selected_cat page_num=page %}">
+        {{page}}
+        </a>
+    </li>
+{% endfor %}
+для списка категорий также переделала href на:
+{% url 'products:catinator' category_id=category.id page_num=1 %}
+
+4. в темплейтах index.html и base.html заменила href на кнопках "Начать покупки" и Каталог, соответственно, на:
+{% url 'products:catinator' category_id=0 page_num=1 %}
+
+
+кастомизация админки
+в админке наследуемся от основного класса и добавляем нужные атрибуты
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+
+в модели прописываем класс Meta у продуктов
+в админке юзера прописываем отображэение корзины
 
 
 
