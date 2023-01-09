@@ -263,7 +263,15 @@ class BasketQuerySet(models.QuerySet):
         return sum(basket.sum() for basket in self)
 и в классе корзины задаём     objects = BasketQuerySet.as_manager()
 
-
+декораторы
+проверка логина пользователя во вьюхе импортируем
+from django.contrib.auth.decorators import login_required
+и оборачиваем метод в декоратор:
+@login_required
+def basket_add(request, product_id):
+прописываем логин-урл в сеттингс, т.к. этот декоратор перенаправляет пользователя на страницу входа
+LOGIN_URL = '/users/login/'
+и добавим аналогичную проверку пользователю на вход в профайл
 
 
 
