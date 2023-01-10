@@ -12,5 +12,7 @@ path('', IndexView.as_view(), name='index'),
 for product in object_list
 https://docs.djangoproject.com/en/4.1/ref/class-based-views/generic-display/#django.views.generic.list.ListView
 настраиваем фильтры, метод get_queryset
+Работу с корзиной переводить в классы нет смысла, т.к. придётся переписывать много встроенных методов в классы, хотя подходящий есть - CreateView
+
 
 
