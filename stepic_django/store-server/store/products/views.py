@@ -4,17 +4,27 @@ from django.contrib.auth.decorators import login_required
 from products.models import ProductCategory, Product, Basket
 from users.models import User
 from django.core.paginator import Paginator
+from django.views.generic.base import TemplateView
 
 
 # Create your views here.
 # Функции - контроллеры - вьюхи
 
-def index(request):
-    context = {
-        'title': 'Store',
-        'is_promotion': True,
-    }
-    return render(request, 'products/index.html', context=context)
+class IndexView(TemplateView):
+    template_name = 'products/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data()
+        context['title']  = 'Store'
+        context['is_promotion']  = True
+        return context
+
+# def index(request):
+#     context = {
+#         'title': 'Store',
+#         'is_promotion': True,
+#     }
+#     return render(request, 'products/index.html', context=context)
 
 
 def products(request, category_id=None, page_number=1):

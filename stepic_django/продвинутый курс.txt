@@ -1,0 +1,11 @@
+CBV - Class-Based-Views
+https://django.fun/ru/docs/django/4.1/topics/class-based-views/
+
+во вьюхе переписываем функции на классы. в продуктах:
+from django.views.generic.base import TemplateView
+пишем класс IndexView
+в урлах меняем ссылку на функци на ссылку на класс 
+path('', IndexView.as_view(), name='index'),
+
+
+
