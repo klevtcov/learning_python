@@ -7,14 +7,17 @@ from django.contrib.auth.decorators import login_required
 from users.models import User
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.views import LoginView
 
 from products.models import Basket
 
 # Create your views here.
 
+class UserLoginView(LoginView):
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
 
-
-def login(request):
+'''def login(request):
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
         if form.is_valid():
@@ -28,6 +31,7 @@ def login(request):
         form = UserLoginForm()
     context = {'form': form}
     return render(request, 'users/login.html', context=context)
+'''
 
 
 class UserRegistrationView(CreateView):
@@ -102,3 +106,4 @@ def profile(request):
 '''def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))    
+'''
