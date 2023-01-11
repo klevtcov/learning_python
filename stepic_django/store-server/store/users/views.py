@@ -99,7 +99,6 @@ def profile(request):
     return render(request, 'users/profile.html', context=context)
 '''
 
-
-def logout(request):
+'''def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))    
