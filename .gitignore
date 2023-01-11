@@ -8207,3 +8207,4 @@ stepic_django/store-server/venv/Lib/site-packages/Pillow-9.3.0.dist-info/REQUEST
 stepic_django/store-server/venv/Lib/site-packages/Pillow-9.3.0.dist-info/top_level.txt
 stepic_django/store-server/venv/Lib/site-packages/Pillow-9.3.0.dist-info/WHEEL
 stepic_django/store-server/venv/Lib/site-packages/Pillow-9.3.0.dist-info/zip-safe
+stepic_django/store-server/store/common/email.py

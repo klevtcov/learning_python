@@ -19,3 +19,30 @@ LOGIN_REDIRECT_URL = "/"
 для логаута прописываем в сеттингсах адрес редиректа LOGOUT_REDIRECT_URL = "/"
 в урлах импортируем from django.contrib.auth.views import LogoutView и прописываем в путях. отдельно ничего во вьюхе под неё писать не надо
 
+Миксины - дополнительные "примеси" для классов
+для добавления вывода сообщений, во вью:
+from django.contrib.messages.views import SuccessMessageMixin
+class UserRegistrationView(SuccessMessageMixin, CreateView):
+миксины должны быть первыми в списке наследования. данный даёт нам возможность использовать success_message
+
+Создаём собственный миксин, common/view.primary
+импортируем его во вьюху from common.views import TitleMixin
+class IndexView(TitleMixin, TemplateView):
+и можем внутри своего классы обращаться к переменным из миксина
+title = '' вместо переопределения метода get_context_data(self, **kwargs)
+
+
+отправка электронной почты
+# Настройки почты
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = ''
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+
+Верификация пользователя
+Прописываем в моделе новый класс (новую таблицу) в которой будет храниться информация о регистрации пользователя
+регистрируем модель в админке
+в формах, в классе создания пользователя, переопределяем метод сохранения пользователя, добавляя туда логику отправки письма с подтверждением
+

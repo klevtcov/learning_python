@@ -8,14 +8,18 @@ from users.models import User
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
 
 from products.models import Basket
 
+from common.views import TitleMixin
+
 # Create your views here.
 
-class UserLoginView(LoginView):
+class UserLoginView(TitleMixin, LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
+    title = 'Store - Авторизация'
 
 '''def login(request):
     if request.method == 'POST':
@@ -34,16 +38,18 @@ class UserLoginView(LoginView):
 '''
 
 
-class UserRegistrationView(CreateView):
+class UserRegistrationView(SuccessMessageMixin, TitleMixin, CreateView):
     model = User
     form_class = UserRegistrationForm
     template_name = 'users/registration.html'
     success_url = reverse_lazy('users:login')
+    success_message = 'Вы успешно зарегистрированны!'
+    title = 'Store - Регистрация'
 
-    def get_context_data(self, **kwargs):
-        context = super(UserRegistrationView, self).get_context_data()
-        context['title']  = 'Store - Регистрация'
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(UserRegistrationView, self).get_context_data()
+    #     context['title']  = 'Store - Регистрация'
+    #     return context
 
 ''' def registration(request):
         if request.method == 'POST':
@@ -59,18 +65,19 @@ class UserRegistrationView(CreateView):
         '''
 
 
-class UserProfileView(UpdateView):
+class UserProfileView(TitleMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'users/profile.html'
     success_url = reverse_lazy('users:profile')
+    title = 'Store - Личный кабинет'
 
     def get_success_url(self):
         return reverse_lazy('users:profile', args=(self.object.id,))
 
     def get_context_data(self, **kwargs):
         context = super(UserProfileView, self).get_context_data()
-        context['title']  = 'Store - Личный кабинет'
+        # context['title']  = 'Store - Личный кабинет'
         context['baskets'] = Basket.objects.filter(user=self.object) 
         return context
 
