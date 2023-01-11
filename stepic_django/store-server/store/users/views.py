@@ -46,7 +46,7 @@ class UserRegistrationView(SuccessMessageMixin, TitleMixin, CreateView):
     success_message = 'Вы успешно зарегистрированны!'
     title = 'Store - Регистрация'
 
-    # def get_context_data(self, **kwargs):
+'''def get_context_data(self, **kwargs):
     #     context = super(UserRegistrationView, self).get_context_data()
     #     context['title']  = 'Store - Регистрация'
     #     return context
