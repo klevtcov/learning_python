@@ -5,6 +5,7 @@ from users.models import User
 # Create your models here.
 # models = таблицы для бд
 
+
 class ProductCategory(models.Model):
     name = models.CharField(max_length=128, unique=True)
     description = models.TextField(null=True, blank=True)
@@ -33,12 +34,10 @@ class Product(models.Model):
         return f'Продукт: {self.name} | Категория: {self.category.name}'
 
 
-
-
 class BasketQuerySet(models.QuerySet):
     def total_sum(self):
         return sum(basket.sum() for basket in self)
-    
+
     def total_quantity(self):
         return sum(basket.quantity for basket in self)
 
