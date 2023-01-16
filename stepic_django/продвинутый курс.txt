@@ -74,9 +74,15 @@ https://django-allauth.readthedocs.io/en/latest/installation.html
 ставим приложение для джанго, прописываем сеттингсы
 
 
+Тестирование в джанго встроенными средствами
+в продуктах прописываем логику в тестах
 
+запускаем тест из консоли
+python.exe .\manage.py test products.tests.IndexViewsTestCase.test_view
 
-
+одинаково выглядящаие queryset'ы не равтны, т.к. хоть и содержат одни даннеы, но созданы в разное время и т.д. т.е. содержат разные данные/свойства
+для сравнения можно приводить к списку
+self.assertEqual(list(response.context_data['object_list']), list(products[:3]))
 
 
 
