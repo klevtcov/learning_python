@@ -93,6 +93,43 @@ Django Debug Toolbar
 https://django-debug-toolbar.readthedocs.io/en/latest/
 Ставим Redis - нереляционная база данных для кеширования
 https://redis.io/docs/getting-started/installation/install-redis-on-windows/
+Поставить Линукс для винды, в нём установить редис
+запустить сервер redis-server
+
+для версии ниже 3.2 поставить библиотеку, в 4 версии она уже есть в комплекте
+python -m pip install django-redis
+https://docs.djangoproject.com/en/4.1/topics/cache/
+первый способ, в лоб - кешируем всю страницу, пишел в урлах:
+path('', cache_page(30)(ProductsListView.as_view()), name='index'),
+
+второй способ - кеширование части шаблона
+{% load cache %}
+{% cache 500 sidebar %}
+    .. sidebar ..
+{% endcache %}
+
+третий способ - кешировать конкретный продукт
+The low-level cache API
+https://docs.djangoproject.com/en/4.1/topics/cache/#the-low-level-cache-api
+products/view.py
+from django.core.cache import cache
+    categories = cache.get('categories')
+    if not categories:
+        context['categories'] = ProductCategory.objects.all()
+        cache.set('categories', context['categories'], 30) - пишем в кеш - имя, данные, время
+    else:
+        context['categories'] = categories
+
+
+Отложенные задачи
+Celery - (message_broker.jpg) - позволяет исполнять задания паралельно
+Брокеры сообщений - redis, rabbitmq, zookeeper
+pip install celery
+
+
+
+
+
 
 
 
