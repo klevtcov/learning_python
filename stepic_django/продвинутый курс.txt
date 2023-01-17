@@ -85,8 +85,15 @@ python.exe .\manage.py test products.tests.IndexViewsTestCase.test_view
 self.assertEqual(list(response.context_data['object_list']), list(products[:3]))
 
 python.exe .\manage.py test users.tests.UserRegistrationViewTestCase
-
 python.exe .\manage.py test .  - запустить все тесты, во всех проектах
+
+
+Кеширование
+Django Debug Toolbar
+https://django-debug-toolbar.readthedocs.io/en/latest/
+Ставим Redis - нереляционная база данных для кеширования
+https://redis.io/docs/getting-started/installation/install-redis-on-windows/
+
 
 
 
