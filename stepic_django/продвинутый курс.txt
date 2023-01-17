@@ -84,6 +84,9 @@ python.exe .\manage.py test products.tests.IndexViewsTestCase.test_view
 для сравнения можно приводить к списку
 self.assertEqual(list(response.context_data['object_list']), list(products[:3]))
 
+python.exe .\manage.py test users.tests.UserRegistrationViewTestCase
+
+python.exe .\manage.py test .  - запустить все тесты, во всех проектах
 
 
 
