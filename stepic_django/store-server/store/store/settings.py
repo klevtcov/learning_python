@@ -181,14 +181,14 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 # Настройки почты
-# EMAIL_HOST = 'smtp.mail.ru'
-# EMAIL_PORT = 465
-# EMAIL_HOST_USER = email_adress
-# EMAIL_HOST_PASSWORD = email_password
-# EMAIL_USE_TLS = False
-# EMAIL_USE_SSL = True
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = email_adress
+EMAIL_HOST_PASSWORD = email_password
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #  OAuth
 
@@ -210,3 +210,8 @@ SOCIALACCOUNT_PROVIDERS = {
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+
+# Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'

@@ -125,8 +125,11 @@ from django.core.cache import cache
 Celery - (message_broker.jpg) - позволяет исполнять задания паралельно
 Брокеры сообщений - redis, rabbitmq, zookeeper
 pip install celery
-
-
+https://docs.celeryq.dev/en/stable/django/index.html
+в settings.py создаём новую секцию и прописываем Настройки
+выносим логику создания и отправки письма в отдельную задачу
+users/tasks.py
+в формах забираем 
 
 
 
