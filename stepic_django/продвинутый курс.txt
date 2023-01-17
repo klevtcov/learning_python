@@ -128,12 +128,13 @@ pip install celery
 https://docs.celeryq.dev/en/stable/django/index.html
 в settings.py создаём новую секцию и прописываем Настройки
 выносим логику создания и отправки письма в отдельную задачу
-users/tasks.py
-в формах забираем 
+забираем из форм и переносим в users/tasks.py
+в формах заменяем этот код на - send_email_verification.delay(user.id)
 
-
-
-
+запуск сервиса
+celery -A proj worker -l INFO
+C:\code\learning_python\stepic_django\store-server\store> celery -A store worker -l INFO
+всё правильно, но редиска не обрабатывает сообщение и не отправляет
 
 
 
